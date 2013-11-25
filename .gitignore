@@ -25,3 +25,9 @@ Thumbs.db
 #  nodejs packages   #
 ######################
 node_modules
+
+
+#  Webstorm IDE files  #
+########################
+.idea
+
