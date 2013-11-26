@@ -140,7 +140,7 @@ nv.models.linePlusBarWithFocusChart = function() {
       // Setup Scales
 
       var dataBars = data.filter(function(d) { return !d.disabled && d.bar });
-      var dataLines = data.filter(function(d) { return !d.bar }); // removed the !d.disabled clause here to fix Issue #240
+      var dataLines = data.filter(function(d) { return !d.disabled && !d.bar }); // removed the !d.disabled clause here to fix Issue #240 <- well, fuck you
 
       x = bars.xScale();
       x2 = x2Axis.scale();
@@ -254,8 +254,8 @@ nv.models.linePlusBarWithFocusChart = function() {
           .datum(dataBars.length ? dataBars : [{values:[]}]);
 
       var lines2Wrap = g.select('.nv-context .nv-linesWrap')
-          .datum(!dataLines[0].disabled ? dataLines : [{values:[]}]);
-          
+          .datum(dataLines.length ? dataLines : [{values:[]}]);
+
       g.select('.nv-context')
           .attr('transform', 'translate(0,' + ( availableHeight1 + margin.bottom + margin2.top) + ')')
 
@@ -437,7 +437,7 @@ nv.models.linePlusBarWithFocusChart = function() {
             );
         
         var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
-            .datum(dataLines[0].disabled ? [{values:[]}] :
+            .datum(!dataLines.length ? [{values:[]}] :
               dataLines
                 .map(function(d,i) {
                   return {
