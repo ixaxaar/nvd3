@@ -84,14 +84,14 @@ nv.models.legend = function() {
             }
           });
 
-      if (!rectangularCheckboxes)
-          seriesEnter.append('circle')
-              .attr('stroke', function(d,i) { return d.color || color(d, i) })
-              .style('fill', function(d,i) { return d.color || color(d, i) })
-              .style('stroke-width', 3)
-              .attr('class','nv-legend-symbol')
-              .attr('r', 5);
-      else {
+//      if (!rectangularCheckboxes)
+//          seriesEnter.append('circle')
+//              .attr('stroke', function(d,i) { return d.color || color(d, i) })
+//              .style('fill', function(d,i) { return d.color || color(d, i) })
+//              .style('stroke-width', 3)
+//              .attr('class','nv-legend-symbol')
+//              .attr('r', 5);
+//      else {
           seriesEnter.append('rect')
               .style('stroke', function(d,i) { return d.color || color(d, i) })
               .style('stroke-width', 3)
@@ -118,7 +118,7 @@ nv.models.legend = function() {
               .attr('y1', -5)
               .attr('y2', 10)
               .style('stroke-width', 3);
-      }
+//      }
           seriesEnter.append('text')
               .attr('text-anchor', 'start')
               .attr('class','nv-legend-text')
