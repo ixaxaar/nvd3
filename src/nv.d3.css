@@ -202,7 +202,13 @@ svg .title {
   fill-opacity: 0;
 }
 
+.nvd3 .nv-legend rect {
+  fill-opacity: 0;
+}
 
+.nvd3 .nv-legend .disabled .nv-legend-symbol-cross {
+    opacity: 0;
+}
 
 /**********
 *  Axes

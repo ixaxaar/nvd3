@@ -61,6 +61,19 @@ nv.addGraph(function() {
   chart.y21Axis
       .tickFormat(d3.format(',.2f'));
 
+  chart.brushHandler(function(x1, x2) {
+      var prevdata = d3.select('#chart svg').datum();
+      var data = testData();
+
+      prevdata.forEach(function(p, itr) {
+          data[itr].disabled = p.disabled;
+      });
+
+      d3.select('#chart svg')
+          .datum(data)
+          .call(chart);
+  })
+
   d3.select('#chart svg')
       .datum(testData())
       .call(chart);
@@ -73,11 +86,11 @@ nv.addGraph(function() {
 
 
 function testData() {
-  return stream_layers(3,128,.1).map(function(data, i) {
+  return stream_layers(5,128,.1).map(function(data, i) {
     return { 
       key: 'Stream' + i,
       values: data,
-      axisRight: (i>0?true:false)
+      axisRight: (i>2?true:false)
     };
   });
 }

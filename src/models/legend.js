@@ -14,6 +14,7 @@ nv.models.legend = function() {
     , updateState = true   //If true, legend will update data.disabled and trigger a 'stateChange' dispatch.
     , radioButtonMode = false   //If true, clicking legend items will cause it to behave like a radio button. (only one can be selected at a time)
     , dispatch = d3.dispatch('legendClick', 'legendDblclick', 'legendMouseover', 'legendMouseout', 'stateChange')
+    , rectangularCheckboxes = false
     ;
 
   //============================================================
@@ -82,20 +83,50 @@ nv.models.legend = function() {
                 });
             }
           });
-      seriesEnter.append('circle')
-          .style('stroke-width', 2)
-          .attr('class','nv-legend-symbol')
-          .attr('r', 5);
-      seriesEnter.append('text')
-          .attr('text-anchor', 'start')
-          .attr('class','nv-legend-text')
-          .attr('dy', '.32em')
-          .attr('dx', '8');
+
+      if (!rectangularCheckboxes)
+          seriesEnter.append('circle')
+              .attr('stroke', function(d,i) { return d.color || color(d, i) })
+              .style('fill', function(d,i) { return d.color || color(d, i) })
+              .style('stroke-width', 3)
+              .attr('class','nv-legend-symbol')
+              .attr('r', 5);
+      else {
+          seriesEnter.append('rect')
+              .style('stroke', function(d,i) { return d.color || color(d, i) })
+              .style('stroke-width', 3)
+              .attr('class','nv-legend-symbol')
+              .attr('height', 15)
+              .attr('width', 15)
+              .attr('rx', 3)
+              .attr('ry', 3)
+              .attr('y', -5);
+          // ixaxaar: add crosses to selected checkboxes
+          seriesEnter.append('line')
+              .attr("stroke", function(d,i) { return d.color || color(d, i) })
+              .attr('class','nv-legend-symbol-cross')
+              .attr('x1', 0)
+              .attr('x2', 15)
+              .attr('y1', -5)
+              .attr('y2', 10)
+              .style('stroke-width', 3);
+          seriesEnter.append('line')
+              .attr("stroke", function(d,i) { return d.color || color(d, i) })
+              .attr('class','nv-legend-symbol-cross')
+              .attr('x1', 15)
+              .attr('x2', 0)
+              .attr('y1', -5)
+              .attr('y2', 10)
+              .style('stroke-width', 3);
+      }
+          seriesEnter.append('text')
+              .attr('text-anchor', 'start')
+              .attr('class','nv-legend-text')
+              .attr('dy', '10')
+              .attr('dx', '20');
       series.classed('disabled', function(d) { return d.disabled });
       series.exit().remove();
-      series.select('circle')
-          .style('fill', function(d,i) { return d.color || color(d,i)})
-          .style('stroke', function(d,i) { return d.color || color(d, i) });
+
       series.select('text').text(getKey);
 
 
@@ -114,8 +145,8 @@ nv.models.legend = function() {
               catch(e) {
                 nodeTextLength = nv.utils.calcApproxTextWidth(legendText);
               }
-             
-              seriesWidths.push(nodeTextLength + 28); // 28 is ~ the width of the circle plus some padding
+
+              seriesWidths.push(nodeTextLength + 28); // 28 is ~ the width of the rect plus some padding
             });
 
         var seriesPerRow = 0;
@@ -262,6 +293,12 @@ nv.models.legend = function() {
     radioButtonMode = _;
     return chart;
   };
+
+  chart.rectangularCheckboxes = function(_) {
+      if (!arguments.length) return rectangularCheckboxes;
+      rectangularCheckboxes = _;
+      return chart;
+  }
 
   //============================================================
 

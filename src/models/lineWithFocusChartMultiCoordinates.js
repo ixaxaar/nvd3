@@ -184,6 +184,8 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
             if (showLegend) {
                 legend.width(availableWidth);
 
+                legend.rectangularCheckboxes(true);
+
                 g.select('.nv-legendWrap')
                     .datum(data)
                     .call(legend);
