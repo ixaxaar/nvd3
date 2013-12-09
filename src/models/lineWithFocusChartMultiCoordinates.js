@@ -23,7 +23,7 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         , color = nv.utils.defaultColor()
         , width = null
         , height = null
-        , height2 = 100
+        , height2 = 50
         , x
         , y
         , y1
@@ -40,6 +40,8 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         , noData = "No Data Available."
         , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'brush')
         , transitionDuration = 250
+        , brushHandler = null
+        , initialData = null
         ;
 
     lines
@@ -98,6 +100,8 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         selection.each(function(data) {
             var container = d3.select(this),
                 that = this;
+
+            if (!initialData) initialData = data;
 
             var availableWidth = (width  || parseInt(container.style('width')) || 960)
                     - margin.left - margin.right,
@@ -261,13 +265,13 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
                 .attr('transform', 'translate(0,' + ( availableHeight1 + margin.bottom + margin2.top) + ')')
 
             var contextLinesWrap = g.select('.nv-context .nv-linesWrap')
-                .datum(data.filter(function(d) { return !d.disabled && !d.axisRight }))
+                .datum(initialData.filter(function(d) { return !d.disabled && !d.axisRight }))
             ;
 
             d3.transition(contextLinesWrap).call(lines2);
 
             var contextLinesWrap21 = g.select('.nv-context .nv-linesWrap21')
-                .datum(data.filter(function(d) { return !d.disabled && d.axisRight }))
+                .datum(initialData.filter(function(d) { return !d.disabled && d.axisRight }))
             ;
 
             d3.transition(contextLinesWrap21).call(lines21);
@@ -693,10 +697,22 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         return chart;
     };
 
+    chart.brushHandler = function(_) {
+        if (!arguments.length) return brushHandler;
+        brushHandler = _;
+
+        chart.brush.on('brushend', function(e) {
+            if (chart.brushExtent() instanceof Array) {
+                brushHandler(chart.brushExtent());
+            }
+        });
+        return chart;
+    };
+
     //============================================================
 
 
     return chart;
-}
+};
 
 

@@ -1197,7 +1197,7 @@ nv.utils.optionsFunc = function(args) {
                 })
               .select('text')
                 .attr('dy', '.32em')
-                .attr('y', 0)
+                .attr('y', -10) // ixaxaar: added some padding
                 .attr('x', axis.tickPadding())
                 .style('text-anchor', 'start')
                 .text(function(d,i) {
@@ -1239,7 +1239,7 @@ nv.utils.optionsFunc = function(args) {
                 })
               .select('text')
                 .attr('dy', '.32em')
-                .attr('y', 0)
+                .attr('y', -10) // ixaxaar: added some padding
                 .attr('x', -axis.tickPadding())
                 .attr('text-anchor', 'end')
                 .text(function(d,i) {
@@ -7012,7 +7012,7 @@ nv.models.linePlusBarWithFocusChart = function() {
       // Setup Scales
 
       var dataBars = data.filter(function(d) { return !d.disabled && d.bar });
-      var dataLines = data.filter(function(d) { return !d.bar }); // removed the !d.disabled clause here to fix Issue #240
+      var dataLines = data.filter(function(d) { return !d.disabled && !d.bar }); // removed the !d.disabled clause here to fix Issue #240 <- well, fuck you
 
       x = bars.xScale();
       x2 = x2Axis.scale();
@@ -7126,8 +7126,8 @@ nv.models.linePlusBarWithFocusChart = function() {
           .datum(dataBars.length ? dataBars : [{values:[]}]);
 
       var lines2Wrap = g.select('.nv-context .nv-linesWrap')
-          .datum(!dataLines[0].disabled ? dataLines : [{values:[]}]);
-          
+          .datum(dataLines.length ? dataLines : [{values:[]}]);
+
       g.select('.nv-context')
           .attr('transform', 'translate(0,' + ( availableHeight1 + margin.bottom + margin2.top) + ')')
 
@@ -7309,7 +7309,7 @@ nv.models.linePlusBarWithFocusChart = function() {
             );
         
         var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
-            .datum(dataLines[0].disabled ? [{values:[]}] :
+            .datum(!dataLines.length ? [{values:[]}] :
               dataLines
                 .map(function(d,i) {
                   return {
@@ -7553,7 +7553,7 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         , color = nv.utils.defaultColor()
         , width = null
         , height = null
-        , height2 = 100
+        , height2 = 50
         , x
         , y
         , y1
@@ -7570,6 +7570,8 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         , noData = "No Data Available."
         , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'brush')
         , transitionDuration = 250
+        , brushHandler = null
+        , initialData = null
         ;
 
     lines
@@ -7628,6 +7630,8 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         selection.each(function(data) {
             var container = d3.select(this),
                 that = this;
+
+            if (!initialData) initialData = data;
 
             var availableWidth = (width  || parseInt(container.style('width')) || 960)
                     - margin.left - margin.right,
@@ -7791,13 +7795,13 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
                 .attr('transform', 'translate(0,' + ( availableHeight1 + margin.bottom + margin2.top) + ')')
 
             var contextLinesWrap = g.select('.nv-context .nv-linesWrap')
-                .datum(data.filter(function(d) { return !d.disabled && !d.axisRight }))
+                .datum(initialData.filter(function(d) { return !d.disabled && !d.axisRight }))
             ;
 
             d3.transition(contextLinesWrap).call(lines2);
 
             var contextLinesWrap21 = g.select('.nv-context .nv-linesWrap21')
-                .datum(data.filter(function(d) { return !d.disabled && d.axisRight }))
+                .datum(initialData.filter(function(d) { return !d.disabled && d.axisRight }))
             ;
 
             d3.transition(contextLinesWrap21).call(lines21);
@@ -8223,11 +8227,23 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         return chart;
     };
 
+    chart.brushHandler = function(_) {
+        if (!arguments.length) return brushHandler;
+        brushHandler = _;
+
+        chart.brush.on('brushend', function(e) {
+            if (chart.brushExtent() instanceof Array) {
+                brushHandler(chart.brushExtent());
+            }
+        });
+        return chart;
+    };
+
     //============================================================
 
 
     return chart;
-}
+};
 
 
 
