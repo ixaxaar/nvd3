@@ -42,6 +42,8 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         , transitionDuration = 250
         , brushHandler = null
         , initialData = null
+        , tooltipXTick = xAxis.tickFormat()
+        , tooltipYTick = yAxis.tickFormat()
         ;
 
     lines
@@ -86,8 +88,8 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
     var showTooltip = function(e, offsetElement) {
         var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ),
             top = e.pos[1] + ( offsetElement.offsetTop || 0),
-            x = xAxis.tickFormat()(lines.x()(e.point, e.pointIndex)),
-            y = yAxis.tickFormat()(lines.y()(e.point, e.pointIndex)),
+            x = tooltipXTick(lines.x()(e.point, e.pointIndex)),
+            y = tooltipYTick(lines.y()(e.point, e.pointIndex)),
             content = tooltip(e.series.key, x, y, e, chart);
 
         nv.tooltip.show([left, top], content, null, null, offsetElement);
@@ -685,6 +687,16 @@ nv.models.lineWithFocusChartMultiCoordinates = function() {
         y2Axis.tickFormat(_);
         y21Axis.tickFormat(_);
         return chart;
+    };
+
+    chart.tooltipXTickFormat = function(_) {
+        if (!arguments.length) return tooltipXTick;
+        tooltipXTick = _;
+    };
+
+    chart.tooltipYTickFormat = function(_) {
+        if (!arguments.length) return tooltipYTick;
+        tooltipYTick = _;
     };
 
     chart.brushExtent = function(_) {
