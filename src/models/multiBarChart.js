@@ -37,6 +37,8 @@ nv.models.multiBarChart = function() {
     , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState')
     , controlWidth = function() { return showControls ? 180 : 0 }
     , transitionDuration = 250
+    , tooltipXTick = xAxis.tickFormat()
+    , tooltipYTick = yAxis.tickFormat()
     ;
 
   multibar
@@ -65,8 +67,8 @@ nv.models.multiBarChart = function() {
   var showTooltip = function(e, offsetElement) {
     var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ),
         top = e.pos[1] + ( offsetElement.offsetTop || 0),
-        x = xAxis.tickFormat()(multibar.x()(e.point, e.pointIndex)),
-        y = yAxis.tickFormat()(multibar.y()(e.point, e.pointIndex)),
+        x = tooltipXTick(multibar.x()(e.point, e.pointIndex)),
+        y = tooltipYTick(multibar.y()(e.point, e.pointIndex)),
         content = tooltip(e.series.key, x, y, e, chart);
 
     nv.tooltip.show([left, top], content, e.value < 0 ? 'n' : 's', null, offsetElement);
@@ -515,6 +517,16 @@ nv.models.multiBarChart = function() {
     if (!arguments.length) return transitionDuration;
     transitionDuration = _;
     return chart;
+  };
+
+  chart.tooltipXTickFormat = function(_) {
+    if (!arguments.length) return tooltipXTick;
+    tooltipXTick = _;
+  };
+
+  chart.tooltipYTickFormat = function(_) {
+    if (!arguments.length) return tooltipYTick;
+    tooltipYTick = _;
   };
 
   //============================================================

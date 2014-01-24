@@ -83,10 +83,13 @@ nv.addGraph(function() {
     chart.xAxis
         .axisLabel("Current Index")
         .showMaxMin(true)
-        .tickFormat(d3.format(',.6f'));
+        .tickFormat(d3.format(',.1f'));
 
     chart.yAxis
         .tickFormat(d3.format(',.1f'));
+
+    chart.tooltipXTickFormat(d3.format(',.6f'));
+    chart.tooltipYTickFormat(d3.format(',.6f'));
 
     d3.select('#chart1 svg')
         .datum(negative_test_data)
