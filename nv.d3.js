@@ -1239,7 +1239,7 @@ nv.utils.optionsFunc = function(args) {
                 })
               .select('text')
                 .attr('dy', '.32em')
-                .attr('y', -10) // ixaxaar: added some padding
+                .attr('y', 0) // ixaxaar: added some padding
                 .attr('x', -axis.tickPadding())
                 .attr('text-anchor', 'end')
                 .text(function(d,i) {
