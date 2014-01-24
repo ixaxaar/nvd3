@@ -469,7 +469,7 @@ nv.models.multiBarChart = function() {
     if (!arguments.length) return rotateLabels;
     rotateLabels = _;
     return chart;
-  }
+  };
 
   chart.staggerLabels = function(_) {
     if (!arguments.length) return staggerLabels;

@@ -4939,7 +4939,7 @@ nv.models.indentedTree = function() {
 //      else {
           seriesEnter.append('rect')
               .style('stroke', function(d,i) { return d.color || color(d, i) })
-              .style('stroke-width', 3)
+              .style('stroke-width', 2)
               .attr('class','nv-legend-symbol')
               .attr('height', 15)
               .attr('width', 15)
@@ -4954,7 +4954,7 @@ nv.models.indentedTree = function() {
               .attr('x2', 11)
               .attr('y1', -1)
               .attr('y2', 6)
-              .style('stroke-width', 3);
+              .style('stroke-width', 2);
           seriesEnter.append('line')
               .attr("stroke", function(d,i) { return d.color || color(d, i) })
               .attr('class','nv-legend-symbol-cross')
@@ -4962,7 +4962,7 @@ nv.models.indentedTree = function() {
               .attr('x2', 4)
               .attr('y1', -1)
               .attr('y2', 6)
-              .style('stroke-width', 3);
+              .style('stroke-width', 2);
 //      }
           seriesEnter.append('text')
               .attr('text-anchor', 'start')
@@ -9229,7 +9229,7 @@ nv.models.multiBarChart = function() {
     if (!arguments.length) return rotateLabels;
     rotateLabels = _;
     return chart;
-  }
+  };
 
   chart.staggerLabels = function(_) {
     if (!arguments.length) return staggerLabels;
