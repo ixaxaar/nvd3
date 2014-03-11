@@ -225,7 +225,7 @@ nv.models.axis = function() {
                 })
               .select('text')
                 .attr('dy', '.32em')
-                .attr('y', 0) // ixaxaar: added some padding
+                .attr('y', -5) // ixaxaar: added some padding
                 .attr('x', -axis.tickPadding())
                 .attr('text-anchor', 'end')
                 .text(function(d,i) {
