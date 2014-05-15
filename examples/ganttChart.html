@@ -1,389 +1,160 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-
 <link href="../src/nv.d3.css" rel="stylesheet" type="text/css">
-
 <style>
 
 body {
   overflow-y:scroll;
 }
 
-text {
-  font: 12px sans-serif;
-}
-
-#chart1 {
-  margin: 10px;
-  min-width: 100px;
-  min-height: 100px;
-/*
-  Minimum height and width is a good idea to prevent negative SVG dimensions...
-  For example width should be =< margin.left + margin.right + 1,
-  of course 1 pixel for the entire chart would not be very useful, BUT should not have errors
-*/
-}
-
-#chart1 svg {
-  height: 500px;
-}
-
 </style>
 <body>
 
-  <div id="chart1" class='with-3d-shadow with-transitions'>
-    <svg></svg>
-  </div>
+<br> <br> <br> <br> <br>
 
-<script src="../lib/d3.v3.js"></script>
+<div class="gallery" id="chart">
+  <svg style="height: 500px;width:960px"></svg>
+</div>
+
+<script src="../lib/d3.v2.js"></script>
 <script src="../nv.d3.js"></script>
-<script src="../src/utils.js"></script>
-<script src="../src/tooltip.js"></script>
-<script src="../src/models/legend.js"></script>
-<script src="../src/models/axis.js"></script>
-<script src="../src/models/multiBarHorizontal.js"></script>
+<script src="../src/models/gantt.js"></script>
 <script src="../src/models/ganttChart.js"></script>
-<script src="stream_layers.js"></script>
+<script src="../src/models/multiBarTimeSeries.js"></script>
+<script src="../src/models/multiBarTimeSeriesChart.js"></script>
+<script src="../../moment.js"></script>
 <script>
 
 
-
-long_short_data = [
+  data = [
   {
-    key: 'Series1',
-    color: '#d62728',
-    values: [
-      {
-        "label" : "Group A" ,
-        "value" : -1.8746444827653
-      } ,
-      {
-        "label" : "Group B" ,
-        "value" : -8.0961543492239
-      } ,
-      {
-        "label" : "Group C" ,
-        "value" : -0.57072943117674
-      } ,
-      {
-        "label" : "Group D" ,
-        "value" : -2.4174010336624
-      } ,
-      {
-        "label" : "Group E" ,
-        "value" : -0.72009071426284
-      } ,
-      {
-        "label" : "Group F" ,
-        "value" : -0.77154485523777
-      } ,
-      {
-        "label" : "Group G" ,
-        "value" : -0.90152097798131
-      } ,
-      {
-        "label" : "Group H" ,
-        "value" : -0.91445417330854
-      } ,
-      {
-        "label" : "Group I" ,
-        "value" : -0.055746319141851
-      }
-    ]
+    "key":{"title":"John Doe","subtitle":"jdo@unkown.com"},
+    "values":[
+    {
+      activity:{type:"new"},
+      predecessor:"",
+      start:1358106735,
+      duration:0
+    },
+    {
+      activity:{type:"accessed"},
+      predecessor:"",
+      start:1358106735,
+      duration:5300
+    },
+    {
+      activity:{type:"accessed"},
+      predecessor:"",
+      start:1358116735,
+      duration:5300
+    },
+    {
+      activity:{type:"exit point"},
+      predecessor:"",
+      start:1358122000,
+      duration:0
+    }]
   },
   {
-    key: 'Series2',
-    color: '#1f77b4',
-    values: [
-      {
-        "label" : "Group A" ,
-        "value" : 25.307646510375
-      } ,
-      {
-        "label" : "Group B" ,
-        "value" : 16.756779544553
-      } ,
-      {
-        "label" : "Group C" ,
-        "value" : 18.451534877007
-      } ,
-      {
-        "label" : "Group D" ,
-        "value" : 8.6142352811805
-      } ,
-      {
-        "label" : "Group E" ,
-        "value" : 7.8082472075876
-      } ,
-      {
-        "label" : "Group F" ,
-        "value" : 5.259101026956
-      } ,
-      {
-        "label" : "Group G" ,
-        "value" : 0.30947953487127
-      } ,
-      {
-        "label" : "Group H" ,
-        "value" : 0
-      } ,
-      {
-        "label" : "Group I" ,
-        "value" : 0
-      }
-    ]
+    "key":{"title":"Jane Doe","subtitle":"jdo@unkown.com"},
+    "values":[{
+      activity:{type:"accessed"},
+      predecessor:"",
+      start:1358090035,
+      duration:8000
+    },
+    {
+      activity:{type:"modified"},
+      predecessor:"",
+      start:1358098035,
+      duration:0
+    }]
   },
   {
-    key: 'Series3',
-    color: '#2ca02c',
-    values: [
-      {
-        "label" : "Group A" ,
-        "value" : -25.307646510375
-      } ,
-      {
-        "label" : "Group B" ,
-        "value" : 16.756779544553
-      } ,
-      {
-        "label" : "Group C" ,
-        "value" : -18.451534877007
-      } ,
-      {
-        "label" : "Group D" ,
-        "value" : 8.6142352811805
-      } ,
-      {
-        "label" : "Group E" ,
-        "value" : -7.8082472075876
-      } ,
-      {
-        "label" : "Group F" ,
-        "value" : 5.259101026956
-      } ,
-      {
-        "label" : "Group G" ,
-        "value" : -0.30947953487127
-      } ,
-      {
-        "label" : "Group H" ,
-        "value" : 0
-      } ,
-      {
-        "label" : "Group I" ,
-        "value" : 0
-      }
-    ]
+    "key":{"title":"Jim Doe","subtitle":"jdo@unkown.com"},
+    "values":[{
+      activity:{type:"accessed"},
+      predecessor:"",
+      start:1358109735,
+      duration:5000
+    }]
+  },
+  {
+    "key":{"title":"Jack Doe","subtitle":"jdo@unkown.com"},
+    "values":[{
+      activity:{type:"accessed"},
+      predecessor:"",
+      start:1358100735,
+      duration:3000
+    }]
+  },
+  {
+    "key":{"title":"Jill Doe","subtitle":"jdo@unkown.com"},
+    "values":[{
+      activity:{type:"accessed"},
+      predecessor:"",
+      start:1358107735,
+      duration:500
+    }]
   }
 ];
 
 
 
-long_short_pos_data = [
-  {
-    key: 'Series1',
-    color: '#d62728',
-    values: [
-      {
-        "label" : "Group A" ,
-        "value" : 1.8746444827653
-      } ,
-      {
-        "label" : "Group B" ,
-        "value" : 8.0961543492239
-      } ,
-      {
-        "label" : "Group C" ,
-        "value" : 0.57072943117674
-      } ,
-      {
-        "label" : "Group D" ,
-        "value" : 2.4174010336624
-      } ,
-      {
-        "label" : "Group E" ,
-        "value" : 0.72009071426284
-      } ,
-      {
-        "label" : "Group F" ,
-        "value" : 0.77154485523777
-      } ,
-      {
-        "label" : "Group G" ,
-        "value" : 0.90152097798131
-      } ,
-      {
-        "label" : "Group H" ,
-        "value" : 0.91445417330854
-      } ,
-      {
-        "label" : "Group I" ,
-        "value" : 0.055746319141851
-      }
-    ]
-  },
-  {
-    key: 'Series2',
-    color: '#1f77b4',
-    values: [
-      {
-        "label" : "Group A" ,
-        "value" : 25.307646510375
-      } ,
-      {
-        "label" : "Group B" ,
-        "value" : 16.756779544553
-      } ,
-      {
-        "label" : "Group C" ,
-        "value" : 18.451534877007
-      } ,
-      {
-        "label" : "Group D" ,
-        "value" : 8.6142352811805
-      } ,
-      {
-        "label" : "Group E" ,
-        "value" : 7.8082472075876
-      } ,
-      {
-        "label" : "Group F" ,
-        "value" : 5.259101026956
-      } ,
-      {
-        "label" : "Group G" ,
-        "value" : 0.30947953487127
-      } ,
-      {
-        "label" : "Group H" ,
-        "value" : 0
-      } ,
-      {
-        "label" : "Group I" ,
-        "value" : 0
-      }
-    ]
-  }
-];
+  nv.addGraph(function() {
+
+    var chart = nv.models.ganttChart()
+       .xDomain([moment.unix(1358119735).startOf("day"), moment.unix(1358119735).endOf("day")])
+        .start(function(d,i) {return moment.unix(d.start).toDate()})
+        .end(function(d,i) {return moment.unix(d.start+d.duration).toDate()})
+        .color(function(d){
+            var c = "blue";
+            switch(d.activity.type) {
+              case "accessed":
+                c = "#c1c1c8";
+                break;
+              case "modified":
+                c = "#742FBE";
+                break;
+              case "new":
+                c = "#236BC0";
+                break;
+              default :
+                c = "red";
+                break;
+            }
+            return c;
+          })
+        .shape(function(d){
+            var s = "circle";
+            switch(d.activity.type) {
+              case "new":
+                s = "square";
+                break;
+              case "modified":
+                s = "triangle-up";
+                break;
+              default:
+                s = "circle";
+                break;
+            }
+            return s;
+          })
+        .tickFormat(function(d){return moment(d).format("ha")})
+        .margin({top: 5, right: 40, bottom: 20, left: 120});
+
+    // var chart = nv.models.multiBarTimeSeriesChart()
+    //     .xDomain([moment().startOf("day"), moment().endOf("day")])
+    //     .width(width - margin.right - margin.left)
+    //     .height(height - margin.top - margin.bottom);
 
 
-long_short_neg_data = [
-  {
-    key: 'Series1',
-    color: '#d62728',
-    values: [
-      {
-        "label" : "Group A" ,
-        "value" : -1.8746444827653
-      } ,
-      {
-        "label" : "Group B" ,
-        "value" : -8.0961543492239
-      } ,
-      {
-        "label" : "Group C" ,
-        "value" : -0.57072943117674
-      } ,
-      {
-        "label" : "Group D" ,
-        "value" : -2.4174010336624
-      } ,
-      {
-        "label" : "Group E" ,
-        "value" : -0.72009071426284
-      } ,
-      {
-        "label" : "Group F" ,
-        "value" : -0.77154485523777
-      } ,
-      {
-        "label" : "Group G" ,
-        "value" : -0.90152097798131
-      } ,
-      {
-        "label" : "Group H" ,
-        "value" : -0.91445417330854
-      } ,
-      {
-        "label" : "Group I" ,
-        "value" : -0.055746319141851
-      }
-    ]
-  },
-  {
-    key: 'Series2',
-    color: '#1f77b4',
-    values: [
-      {
-        "label" : "Group A" ,
-        "value" : -25.307646510375
-      } ,
-      {
-        "label" : "Group B" ,
-        "value" : -16.756779544553
-      } ,
-      {
-        "label" : "Group C" ,
-        "value" : -18.451534877007
-      } ,
-      {
-        "label" : "Group D" ,
-        "value" : -8.6142352811805
-      } ,
-      {
-        "label" : "Group E" ,
-        "value" : -7.8082472075876
-      } ,
-      {
-        "label" : "Group F" ,
-        "value" : -5.259101026956
-      } ,
-      {
-        "label" : "Group G" ,
-        "value" : -0.30947953487127
-      } ,
-      {
-        "label" : "Group H" ,
-        "value" : 0
-      } ,
-      {
-        "label" : "Group I" ,
-        "value" : 0
-      }
-    ]
-  }
-];
-
-
-
-
-var chart;
-nv.addGraph(function() {
-  chart = nv.models.ganttChart()
-      // .x(function(d) { return d.label })
-      // .y(function(d) { return d.value })
-      .margin({top: 30, right: 20, bottom: 50, left: 175})
-      //.showValues(true)
-      //.tooltips(false)
-      // .barColor(d3.scale.category20().range())
-      // .transitionDuration(250)
-      // .stacked(true)
-      //.showControls(false);
-
-  // chart.yAxis
-  //     .tickFormat(d3.format(',.2f'));
-
-  d3.select('#chart1 svg')
-      .datum(long_short_data)
-      .call(chart);
-
-  nv.utils.windowResize(chart.update);
-
-  chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
-
-  return chart;
-});
-
+    d3.select('#chart svg')
+        .datum(data)
+        .transition()
+        .duration(1000)
+        .call(chart);
+  });
 
 
 </script>
