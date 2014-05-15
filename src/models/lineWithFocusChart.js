@@ -410,8 +410,24 @@ nv.models.lineWithFocusChart = function() {
 
             //============================================================
 
-
         });
+
+        // Update Main (Focus)
+        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
+            .datum(
+              data
+                .filter(function(d) { return !d.disabled })
+                .map(function(d,i) {
+                  return {
+                    key: d.key,
+                    area: d.area,
+                    values: d.values.filter(function(d,i) {
+                      return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
+                    })
+                  }
+                })
+            );
+        focusLinesWrap.transition().duration(transitionDuration).call(lines);
 
         return chart;
     }
